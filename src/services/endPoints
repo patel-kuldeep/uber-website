@@ -1,0 +1,9 @@
+export const END_POINTS = {
+    USER_REGISTER: "/users/register",
+    USER_LOGIN: "/users/login",
+
+    // CAPTAIN LOGIN
+    CAPTAIN_REGISTER: "/captains/register",
+    CAPTAIN_LOGIN: "/captains/login",
+
+}   
