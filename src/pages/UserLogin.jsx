@@ -49,9 +49,10 @@ export default function Login() {
                 email: form.email,
                 password: form.password
             });
+            console.log('response: ', response);
             if (response?.data?.success) {
                 localStorage.setItem("token", response.data.token);
-                localStorage.setItem("user", response.data.user);
+                localStorage.setItem("user", JSON.stringify(response.data.user));
                 toast.success(response.data?.message)
                 navigate("/dashboard");
             }

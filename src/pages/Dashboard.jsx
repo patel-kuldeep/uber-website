@@ -1,15 +1,22 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaArrowLeft } from "react-icons/fa";
 import uberImage from "../assets/images/uber-map.gif";
-import LocationPanel from "./locationPanel";
+import LocationPanel from "../components/locationPanel";
+import RideSelection from "../components/RideSelection";
+import ConfirmRide from "../components/ConfirmRide";
 
 const Dashboard = () => {
+    const [locationPanelOpen, setlocationPanelOpen] = useState(false);
+    const [locationRidePanel, setLocationRidePanel] = useState(false);
+    const [selectedLocation, setSelectedLocation] = useState("");
+    const [vehicleSelect, setVehicleSelect] = useState(null)
 
-    const [panelOpen, setPanelOpen] = useState(false);
+    useEffect(() => {
+        console.log("vehicleSelect", vehicleSelect)
+    }, [vehicleSelect])
 
     return (
         <div className="relative h-screen w-full overflow-hidden">
-
             {/* Map */}
             <img
                 src={uberImage}
@@ -27,15 +34,15 @@ const Dashboard = () => {
                 className={`
                 absolute left-0 w-full bg-white rounded-t-3xl shadow-lg
                 p-6 transition-all duration-800
-                ${panelOpen ? "bottom-0 h-[100%]" : "bottom-0 h-[30%]"}
+                ${locationPanelOpen ? "bottom-0 h-[100%]" : "bottom-0 h-[30%]"}
                 `}
             >
                 {/* Header */}
                 <div className="flex items-center mb-6">
-                    {panelOpen && (
+                    {locationPanelOpen && (
                         <FaArrowLeft
                             className="text-xl cursor-pointer mr-4"
-                            onClick={() => setPanelOpen(false)}
+                            onClick={() => { setlocationPanelOpen(false); setLocationRidePanel(false) }}
                         />
                     )}
 
@@ -47,7 +54,7 @@ const Dashboard = () => {
                 {/* Pickup */}
                 {/* Pickup Location */}
                 <div
-                    onClick={() => setPanelOpen(true)}
+                    onClick={() => setlocationPanelOpen(true)}
                     className="flex items-center gap-3 bg-gray-200 rounded-lg px-4 py-3 mb-4"
                 >
                     <div className="w-3 h-3 rounded-full border-2 border-black"></div>
@@ -56,7 +63,7 @@ const Dashboard = () => {
                         type="text"
                         placeholder="Add a pick-up location"
                         className="bg-transparent outline-none w-full"
-                        onFocus={() => setPanelOpen(true)}
+                        onFocus={() => setlocationPanelOpen(true)}
                     />
                 </div>
 
@@ -75,11 +82,29 @@ const Dashboard = () => {
                     Leave Now
                 </button>
 
-                {panelOpen && (
+                {locationPanelOpen && (
                     <div className="absolute bottom-0 h-[70%] p-0 bg-white">
-                        <LocationPanel />
+                        <LocationPanel setSelectedLocation={setSelectedLocation} setLocationRidePanel={setLocationRidePanel} />
                     </div>
                 )}
+
+                {locationRidePanel &&
+                    <div className="absolute bottom-0 h-[70%] p-0 bg-white w-full">
+                        <RideSelection
+                            locationRidePanel={locationRidePanel}
+                            setLocationRidePanel={setLocationRidePanel}
+                            setVehicleSelect={setVehicleSelect}
+                        />
+                    </div>
+                }
+
+                {vehicleSelect !== null &&
+                    <div className="absolute bottom-0 h-[70%] p-0 bg-white w-full">
+                        <ConfirmRide vehicleSelect={vehicleSelect} />
+                    </div>
+                }
+
+
 
 
             </div>
