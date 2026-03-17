@@ -3,14 +3,8 @@ import RideOption from "./RideOption";
 import car from "../assets/images/car.svg";
 import bike from "../assets/images/bike.svg";
 import auto from "../assets/images/auto.svg";
-import { FaChevronDown } from "react-icons/fa";
 
-const RideSelection = ({
-    locationRidePanel,
-    setLocationRidePanel,
-    setVehicleSelect
-}) => {
-
+const RideSelection = ({ setVehicleSelect }) => {
     const [selectedRide, setSelectedRide] = useState(null);
 
     const rides = [
@@ -20,7 +14,7 @@ const RideSelection = ({
             seats: 4,
             time: "2 mins away • 15:24",
             description: "Affordable, compact rides",
-            price: "193.20"
+            price: "193.20",
         },
         {
             image: bike,
@@ -28,7 +22,7 @@ const RideSelection = ({
             seats: 1,
             time: "3 mins away • 15:24",
             description: "Affordable motorcycle rides",
-            price: "65.17"
+            price: "65.17",
         },
         {
             image: auto,
@@ -36,8 +30,8 @@ const RideSelection = ({
             seats: 3,
             time: "4 mins away • 15:25",
             description: "Comfortable auto rides",
-            price: "120.00"
-        }
+            price: "120.00",
+        },
     ];
 
     const handleSelect = (ride) => {
@@ -46,34 +40,19 @@ const RideSelection = ({
     };
 
     return (
-        <div className="bg-white rounded-t-3xl w-full">
-
-            {/* Close Panel */}
-            <button
-                className="flex items-center gap-2 bg-gray-200 px-4 py-2 rounded-full mb-5"
-                onClick={() => setLocationRidePanel(false)}
-            >
-                <FaChevronDown />
-            </button>
-
-            {/* Ride List */}
+        <div>
             {rides.map((ride, index) => (
                 <div
                     key={index}
                     onClick={() => handleSelect(ride)}
-                    className={`transition cursor-pointer rounded-xl mb-3 w-90
-          
-          ${selectedRide === ride.title
-                            ? "border-2 border-black "
-                            : "border border-transparent hover:border-black hover:shadow-md"
-                        }
-          
-          `}
+                    className={`p-3 rounded-xl mb-3 cursor-pointer transition ${selectedRide === ride.title
+                        ? "border-2 border-black"
+                        : "border hover:border-black"
+                        }`}
                 >
                     <RideOption {...ride} />
                 </div>
             ))}
-
         </div>
     );
 };

@@ -1,114 +1,125 @@
 import { useEffect, useState } from "react";
 import { FaArrowLeft } from "react-icons/fa";
 import uberImage from "../assets/images/uber-map.gif";
+
 import LocationPanel from "../components/locationPanel";
 import RideSelection from "../components/RideSelection";
 import ConfirmRide from "../components/ConfirmRide";
+import LookingForDriver from "../components/LookingForDriver";
+import WaitingForDriver from "../components/WaitingForDriver";
 
 const Dashboard = () => {
-    const [locationPanelOpen, setlocationPanelOpen] = useState(false);
-    const [locationRidePanel, setLocationRidePanel] = useState(false);
+    const [showLocationPanel, setShowLocationPanel] = useState(false);
+    const [showRideSelection, setShowRideSelection] = useState(false);
+    const [vehicleSelect, setVehicleSelect] = useState(null);
     const [selectedLocation, setSelectedLocation] = useState("");
-    const [vehicleSelect, setVehicleSelect] = useState(null)
+    const [lookingForDriver, setLookingForDriver] = useState(false);
+    const [waitingForDriver, setWaitingForDriver] = useState(false);
 
     useEffect(() => {
-        console.log("vehicleSelect", vehicleSelect)
-    }, [vehicleSelect])
+        if (lookingForDriver) {
+            const timer = setTimeout(() => {
+                setLookingForDriver(false);   // stop loading screen
+                setWaitingForDriver(true);    // show waiting screen
+            }, 10000); // 30 sec delay
+
+            return () => clearTimeout(timer);
+        }
+    }, [lookingForDriver]);
 
     return (
         <div className="relative h-screen w-full overflow-hidden">
-            {/* Map */}
+
             <img
                 src={uberImage}
                 alt="map"
                 className="w-full h-full object-cover"
             />
 
-            {/* Uber Logo */}
             <h1 className="text-3xl font-bold absolute top-5 left-5 bg-white px-3 py-1 rounded">
                 Uber
             </h1>
 
-            {/* Bottom Panel */}
-            <div
-                className={`
-                absolute left-0 w-full bg-white rounded-t-3xl shadow-lg
-                p-6 transition-all duration-800
-                ${locationPanelOpen ? "bottom-0 h-[100%]" : "bottom-0 h-[30%]"}
-                `}
-            >
-                {/* Header */}
-                <div className="flex items-center mb-6">
-                    {locationPanelOpen && (
-                        <FaArrowLeft
-                            className="text-xl cursor-pointer mr-4"
-                            onClick={() => { setlocationPanelOpen(false); setLocationRidePanel(false) }}
+            <div className="absolute bottom-0 w-full bg-white rounded-t-3xl p-6">
+
+                {/* DEFAULT */}
+                {!showRideSelection && vehicleSelect === null && (
+                    <>
+                        <h2 className="text-2xl font-bold mb-6">Find a trip</h2>
+
+                        <input
+                            placeholder="Pickup location"
+                            className="w-full p-3 mb-3 bg-gray-200 rounded"
+                            onFocus={() => setShowLocationPanel(true)}
                         />
-                    )}
 
-                    <h2 className="text-2xl font-bold">
-                        Find a trip
-                    </h2>
-                </div>
+                        <input
+                            placeholder="Destination"
+                            className="w-full p-3 mb-3 bg-gray-200 rounded"
+                            onFocus={() => setShowLocationPanel(true)}
+                        />
+                    </>
+                )}
 
-                {/* Pickup */}
-                {/* Pickup Location */}
-                <div
-                    onClick={() => setlocationPanelOpen(true)}
-                    className="flex items-center gap-3 bg-gray-200 rounded-lg px-4 py-3 mb-4"
-                >
-                    <div className="w-3 h-3 rounded-full border-2 border-black"></div>
-
-                    <input
-                        type="text"
-                        placeholder="Add a pick-up location"
-                        className="bg-transparent outline-none w-full"
-                        onFocus={() => setlocationPanelOpen(true)}
+                {/* LOCATION */}
+                {showLocationPanel && !showRideSelection && (
+                    <LocationPanel
+                        setSelectedLocation={setSelectedLocation}
+                        onLocationSelect={() => {
+                            setShowLocationPanel(false);
+                            setShowRideSelection(true);
+                        }}
                     />
-                </div>
+                )}
 
-                {/* Destination */}
-                <div className="flex items-center gap-3 bg-gray-200 rounded-lg px-4 py-3 mb-4">
-                    <div className="w-3 h-3 bg-black"></div>
+                {/* RIDE */}
+                {showRideSelection && vehicleSelect === null && (
+                    <div>
+                        <FaArrowLeft
+                            className="mb-4 cursor-pointer"
+                            onClick={() => {
+                                setShowRideSelection(false);
+                                setShowLocationPanel(true);
+                            }}
+                        />
 
-                    <input
-                        type="text"
-                        placeholder="Enter your destination"
-                        className="bg-transparent outline-none w-full"
-                    />
-                </div>
-                {/* Time */}
-                <button className="bg-gray-200 px-4 py-2 rounded-lg">
-                    Leave Now
-                </button>
-
-                {locationPanelOpen && (
-                    <div className="absolute bottom-0 h-[70%] p-0 bg-white">
-                        <LocationPanel setSelectedLocation={setSelectedLocation} setLocationRidePanel={setLocationRidePanel} />
+                        <RideSelection setVehicleSelect={setVehicleSelect} />
                     </div>
                 )}
 
-                {locationRidePanel &&
-                    <div className="absolute bottom-0 h-[70%] p-0 bg-white w-full">
-                        <RideSelection
-                            locationRidePanel={locationRidePanel}
-                            setLocationRidePanel={setLocationRidePanel}
-                            setVehicleSelect={setVehicleSelect}
+                {/* CONFIRM */}
+                {vehicleSelect && !lookingForDriver && !waitingForDriver && (
+                    <div>
+                        <FaArrowLeft
+                            className="mb-4 cursor-pointer"
+                            onClick={() => {
+                                setVehicleSelect(null);
+                                setShowRideSelection(true);
+                            }}
+                        />
+
+                        <ConfirmRide
+                            vehicleSelect={vehicleSelect}
+                            selectedLocation={selectedLocation}
+                            setLookingForDriver={setLookingForDriver}
                         />
                     </div>
-                }
+                )}
 
-                {vehicleSelect !== null &&
-                    <div className="absolute bottom-0 h-[70%] p-0 bg-white w-full">
-                        <ConfirmRide vehicleSelect={vehicleSelect} />
-                    </div>
-                }
+                {lookingForDriver && !waitingForDriver && (
+                    <LookingForDriver
+                        vehicleSelect={vehicleSelect}
+                        selectedLocation={selectedLocation}
+                    />
+                )}
 
-
-
-
+                {waitingForDriver && (
+                    <WaitingForDriver
+                        vehicleSelect={vehicleSelect}
+                        selectedLocation={selectedLocation}
+                    />
+                )}
             </div>
-
         </div>
     );
 };
