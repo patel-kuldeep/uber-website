@@ -10,7 +10,6 @@ export default function Login() {
         email: "",
         password: ""
     });
-
     const [errors, setErrors] = useState({});
     const [loading, setLoading] = useState(false);
 
@@ -50,18 +49,18 @@ export default function Login() {
                 password: form.password
             });
             console.log('response: ', response);
-            if (response?.data?.success) {
-                localStorage.setItem("token", response.data.token);
-                localStorage.setItem("user", JSON.stringify(response.data.user));
-                toast.success(response.data?.message)
+            if (response?.success) {
+                localStorage.setItem("token", response.token);
+                localStorage.setItem("user", JSON.stringify(response.user));
+                toast.success(response?.message)
                 navigate("/dashboard");
             }
         } catch (error) {
             console.error(error);
             if (error.response?.data?.message) {
-                alert(error.response.data.message);
+                toast.error(error.response.data.message);
             } else {
-                alert("Login failed. Please try again.");
+                toast.error("Login failed. Please try again.");
             }
         } finally {
             setLoading(false);

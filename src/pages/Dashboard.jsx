@@ -7,6 +7,7 @@ import RideSelection from "../components/RideSelection";
 import ConfirmRide from "../components/ConfirmRide";
 import LookingForDriver from "../components/LookingForDriver";
 import WaitingForDriver from "../components/WaitingForDriver";
+import Riding from "./Riding";
 
 const Dashboard = () => {
     const [showLocationPanel, setShowLocationPanel] = useState(false);
@@ -19,9 +20,9 @@ const Dashboard = () => {
     useEffect(() => {
         if (lookingForDriver) {
             const timer = setTimeout(() => {
-                setLookingForDriver(false);   // stop loading screen
-                setWaitingForDriver(true);    // show waiting screen
-            }, 10000); // 30 sec delay
+                setLookingForDriver(false);
+                setWaitingForDriver(true);
+            }, 10000); // 10 sec delay
 
             return () => clearTimeout(timer);
         }
@@ -114,10 +115,11 @@ const Dashboard = () => {
                 )}
 
                 {waitingForDriver && (
-                    <WaitingForDriver
-                        vehicleSelect={vehicleSelect}
-                        selectedLocation={selectedLocation}
-                    />
+                    // <WaitingForDriver
+                    //     vehicleSelect={vehicleSelect}
+                    //     selectedLocation={selectedLocation}
+                    // />
+                    <Riding />
                 )}
             </div>
         </div>

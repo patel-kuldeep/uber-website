@@ -131,11 +131,11 @@ const CaptainSignUp = () => {
 
             const response = await registerCaptain(payload);
             console.log("Captain Registered:", response);
-            if (response?.data?.success) {
+            if (response?.success) {
                 navigate('/captain-dashboard')
-                localStorage.setItem("captainToken", response?.data?.token);
-                localStorage.setItem("captain", JSON.stringify(response?.data?.captain));
-                toast.success(response?.data?.message);
+                localStorage.setItem("captainToken", response?.token);
+                localStorage.setItem("captain", JSON.stringify(response?.captain));
+                toast.success(response?.message);
                 setFormData({
                     firstName: "",
                     lastName: "",

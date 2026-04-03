@@ -64,11 +64,11 @@ export default function UserSignUp() {
         try {
             setLoading(true);
             const response = await registerUser(payload);
-            if (response.data?.success) {
+            if (response?.success) {
                 navigate("/dashboard");
-                toast(response?.data?.message);
-                localStorage.setItem("token", response?.data?.token);
-                localStorage.setItem("user", response?.data?.user);
+                toast(response?.message);
+                localStorage.setItem("token", response?.token);
+                localStorage.setItem("user", JSON.stringify(response?.user));
             }
         } catch (error) {
             console.error(error);

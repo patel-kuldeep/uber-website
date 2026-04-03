@@ -72,11 +72,11 @@ const CaptainLogin = () => {
         try {
             const response = await loginCaptain(loginData)
             console.log('response: ', response);
-            if (response?.data?.success) {
+            if (response?.success) {
                 navigate('/captain-dashboard')
-                localStorage.setItem("captainToken", response?.data?.token);
-                localStorage.setItem("captain", JSON.stringify(response?.data?.captain));
-                toast.success(response?.data?.message);
+                localStorage.setItem("captainToken", response?.token);
+                localStorage.setItem("captain", JSON.stringify(response?.captain));
+                toast.success(response?.message);
                 setFormData({
                     email: "",
                     password: "",
@@ -85,7 +85,7 @@ const CaptainLogin = () => {
             }
         } catch (error) {
             console.log('error: ', error);
-            toast.error(error?.error?.message)
+            toast.error(error?.response?.data?.message || "Login failed. Please try again.")
         }
     };
 
